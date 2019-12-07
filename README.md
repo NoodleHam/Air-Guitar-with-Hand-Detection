@@ -1,34 +1,27 @@
-# Finger Detection and Tracking
+# Air Guitar with Hand Detection
 
-[![HitCount](http://hits.dwyl.io/amarlearning/opencv.svg)](http://hits.dwyl.io/amarlearning/opencv)
-[![MIT LICENSE](https://img.shields.io/pypi/l/pyzipcode-cli.svg)](http://amarlearning.mit-license.org/)
-[![Issues](https://camo.githubusercontent.com/926d8ca67df15de5bd1abac234c0603d94f66c00/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636f6e747269627574696f6e732d77656c636f6d652d627269676874677265656e2e7376673f7374796c653d666c6174)](https://github.com/amarlearning/opencv/issues)
-[![Say Thanks!](https://img.shields.io/badge/SayThanks.io-%E2%98%BC-1EAEDB.svg)](https://saythanks.io/to/amarlearning)
+The code is based on @amarlearning ’s
+repository https://github.com/amarlearning/Finger-Detection-and-Tracking.
 
-> Tracking the movement of a finger is an important feature of many computer vision applications. In this application, A histogram based approach is used to separate out the hand from the background frame. Thresholding and Filtering techniques are used for background cancellation to obtain optimum results.
+This program that allows you to play different notes at different volumes by moving your hand in front of the webcam.
 
-## Tutorial
-[Finger Detection and Tracking using OpenCV and Python](https://dev.to/amarlearning/finger-detection-and-tracking-using-opencv-and-python-586m)
+## Setup
+Install Python 3.7 (not 3.8 or higher) from python.org. The latest release of 3.7 as of writing can be found on: https://www.python.org/downloads/release/python-375/
 
-## Demo
-[![Demo GitHub Sectory](https://cdn-images-1.medium.com/max/1040/1*ngmwjSu1gt4mmqhm9JJcpg.jpeg)](https://www.youtube.com/watch?v=P3dUePye_-k)
+Note that the installation process for different operating systems will differ. If you're on windows, click "Add Python to PATH"
+when you're running the installer.
 
-## Stargazers over time
+After installing python, launch a terminal window and cd into the project root.
+In the terminal, run "pip3 pip install requirements.txt". This will
+Install the libraries needed to run the program.
 
-[![Stargazers over time](https://starcharts.herokuapp.com/amarlearning/Finger-Detection-and-Tracking.svg)](https://starcharts.herokuapp.com/amarlearning/Finger-Detection-and-Tracking)
+## Running
+In a terminal, go to the folder "Finger Detection and Tracking" and run
+"python3 FingerDetection.py".
 
-## Issues
+After the program window shows up, cover your hand with all the squares and
+press "z" on the keyboard. This will record the color features of your hand
+so the program can detect it. (Press z at and time and it will recalibrate)
 
-You can report the bugs at the [issue tracker](https://github.com/amarlearning/opencv/issues)
-
-**OR**
-
-You can [tweet me](https://twitter.com/iamarpandey) if you can't get it to work. In fact, you should tweet me anyway.
-
-***
-
-## License
-
-Built with ♥ by Amar Prakash Pandey([@amarlearning](http://github.com/amarlearning)) under BSD 2-Clause "Simplified" License
-
-You can find a copy of the License at [BSD 2-Clause "Simplified" License](https://raw.githubusercontent.com/amarlearning/Finger-Detection-and-Tracking/master/LICENSE)
+Make sure the computer volume is not set too high. The program can play unexpected sounds at unexpected volumes
+at unexpected times.
