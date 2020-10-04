@@ -7,6 +7,8 @@ repository https://github.com/amarlearning/Finger-Detection-and-Tracking.
 
 This program that allows you to play different notes (technically, sin waves of different frequencies) at different volumes by moving your hand in front of the webcam. Created for fun.
 
+For a demo, see *air-guitar-demo.mkv* under the project directory.
+
 ## Setup
 Install Python 3from python.org.
 
