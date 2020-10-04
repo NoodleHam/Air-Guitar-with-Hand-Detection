@@ -5,17 +5,19 @@ Play air guitar unironically with your fingers (kind of).
 The code is based on @amarlearning ’s
 repository https://github.com/amarlearning/Finger-Detection-and-Tracking.
 
-This program that allows you to play different notes at different volumes by moving your hand in front of the webcam.
+This program that allows you to play different notes (technically, sin waves of different frequencies) at different volumes by moving your hand in front of the webcam. Created for fun.
 
 ## Setup
-Install Python 3.7 (not 3.8 or higher) from python.org. The latest release of 3.7 as of writing can be found on: https://www.python.org/downloads/release/python-375/
+Install Python 3from python.org.
 
 Note that the installation process for different operating systems will differ. If you're on windows, click "Add Python to PATH"
 when you're running the installer.
 
 After installing python, launch a terminal window and cd into the project root.
-In the terminal, run "pip3 pip install requirements.txt". This will
+In the terminal, run `pip3 install -r requirements.txt`. This will
 Install the libraries needed to run the program.
+
+If the pip3 package simpleaudio fails to install (which can happen on Linux machines), try installing the *liabasound2* dependency: `sudo apt install libasound2-dev` and then re-run `pip3 install -r requirements.txt` or simply `pip3 install simpleaudio`
 
 ## Running
 In a terminal, go to the folder "Finger Detection and Tracking" and run

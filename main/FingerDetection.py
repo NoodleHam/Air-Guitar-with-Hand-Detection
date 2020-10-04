@@ -3,6 +3,9 @@ import numpy as np
 
 import simpleaudio as sa
 
+import time
+import threading
+
 hand_hist = None
 traverse_point = []
 traverse_point_2 = []
@@ -13,6 +16,35 @@ hand_rect_one_y = None
 hand_rect_two_x = None
 hand_rect_two_y = None
 
+global_sound_frequency = -1
+global_sound_volume = -1
+
+def play_sound_worker():
+    global global_sound_frequency
+    global global_sound_volume
+    fs = 44100  # 44100 samples per second
+    seconds = 0.35  # Note duration of 3 seconds
+    while True:
+        if global_sound_frequency == -1:
+            time.sleep(0.10)
+            continue
+        else:
+            time.sleep(0.25)
+        # Generate array with seconds*sample_rate steps, ranging between 0 and seconds
+        t = np.linspace(0, seconds, int(seconds * fs), False)
+
+        # Generate a x Hz sine wave
+        note = np.sin(global_sound_frequency * t * 2 * np.pi)
+        # Ensure that highest value is in 16-bit range
+        audio = note * (2 ** 15 - 1) / np.max(np.abs(note)) * global_sound_volume
+        # Convert to 16-bit data
+        audio = audio.astype(np.int16)
+
+        # Start playback
+        play_obj = sa.play_buffer(audio, 1, 2, fs)
+
+        # Wait for playback to finish before exiting
+        play_obj.wait_done()
 
 def rescale_frame(frame, wpercent=130, hpercent=130):
     width = int(frame.shape[1] * wpercent / 100)
@@ -23,7 +55,7 @@ def rescale_frame(frame, wpercent=130, hpercent=130):
 def contours(hist_mask_image):
     gray_hist_mask_image = cv2.cvtColor(hist_mask_image, cv2.COLOR_BGR2GRAY)
     ret, thresh = cv2.threshold(gray_hist_mask_image, 0, 255, 0)
-    _, cont, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cont, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     return cont
 
 
@@ -179,6 +211,7 @@ def draw_circles(frame, traverse_point, color=None):
 
 
 def manage_image_opr(frame, hand_hist):
+    img_h, img_w = tuple(list(frame.shape[0:2]))
     hist_mask_image = hist_masking(frame, hand_hist)
     # cv2.imshow('after filter', hist_mask_image
     contour_list = contours(hist_mask_image)
@@ -208,37 +241,25 @@ def manage_image_opr(frame, hand_hist):
 
         draw_circles(frame, traverse_point)
         if far_points[0] is not None:
-            freq = int(far_points[0][0]) * 2 # treat x location as frequency
-            volume = float(far_points[0][1] / 800) # treat y location as volume
+            freq = (int(far_points[0][0]) / img_w) * 2000 + 20 # treat x location as frequency, max 2020, min 20
+            volume = float(far_points[0][1] / img_h) # treat y location as volume, max 1
             print("Playing frequency {} Hz at volume {}".format(freq, round(volume*100) / 100.))
             play_sound(freq, volume)
         # draw_circles(frame, traverse_point_2, color=[0,0,255])
 
 
 def play_sound(frequency, volume):
-    frequency = frequency  # Our played note will be 440 Hz
-    fs = 44100  # 44100 samples per second
-    seconds = 0.05  # Note duration of 3 seconds
-
-    # Generate array with seconds*sample_rate steps, ranging between 0 and seconds
-    t = np.linspace(0, seconds, seconds * fs, False)
-
-    # Generate a 440 Hz sine wave
-    note = np.sin(frequency * t * 2 * np.pi)
-
-    # Ensure that highest value is in 16-bit range
-    audio = note * (2 ** 15 - 1) / np.max(np.abs(note)) * volume
-    # Convert to 16-bit data
-    audio = audio.astype(np.int16)
-
-    # Start playback
-    play_obj = sa.play_buffer(audio, 1, 2, fs)
-
-    # Wait for playback to finish before exiting
-    # play_obj.wait_done()
+    global global_sound_frequency
+    global global_sound_volume
+    global_sound_frequency = frequency
+    global_sound_volume = volume
 
 def main():
     global hand_hist
+    th = threading.Thread(target=play_sound_worker)
+    th.daemon = True
+    th.start()
+    
     is_hand_hist_created = False
     capture = cv2.VideoCapture(0)
 
@@ -259,7 +280,8 @@ def main():
         cv2.flip(frame, 1, frame)
         cv2.imshow("Live Feed", rescale_frame(frame))
 
-        if pressed_key == 27:
+	# quit if "Esc" or "q" is pressed
+        if pressed_key == 27 or pressed_key == ord('q'):
             break
 
     cv2.destroyAllWindows()
